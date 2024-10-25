@@ -40,10 +40,12 @@ public class Spawner : MonoBehaviour
 
     private void trySpawnTetramino() {
         if (!spawnedAndActive) {
+            PauseMenuManager.Instance.ResumeGameNoMenu();
             spawnedAndActive = true;
             uint currentHeight = HeightCalculator.CalculateHeight(platformPosition.position);
             cameraRiser.UpdateTargetHeight(currentHeight);
             spawnerRiser.UpdateTargetHeight(currentHeight);
+            TowerManager.Instance.UpdateMaxHeight(currentHeight);
             Debug.Log("CurrentHeight:"+currentHeight);
             spawnTetramino();
         }

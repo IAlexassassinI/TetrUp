@@ -7,19 +7,24 @@ public class Movement_v2 : MonoBehaviour
     private Transform transf;
 
     [SerializeField]
-    private float baseSpeed = 2f;
+    public float baseSpeed = 2f;
     [SerializeField]
-    private float acceleration = 8f;
+    public float acceleration = 8f;
 
-    private float speed;
+    public float speed;
 
     [SerializeField]
     private float sideSpeed = 1f;
     
-    private bool isStationare = false;
+    public bool isStationare = false;
     private Movement_v2 movement_script;
     private Rigidbody rigid = null;
     private bool ignoreCollisions = false;
+
+    private void Awake()
+    {
+        speed = baseSpeed;
+    }
 
     void Start()
     {
@@ -45,6 +50,9 @@ public class Movement_v2 : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (TowerManager.Instance != null) {
+            TowerManager.Instance.UpdateCurrentHealth(-1);
+        }
         CheckIfStillActive();
     }
 
@@ -57,7 +65,7 @@ public class Movement_v2 : MonoBehaviour
         Debug.Log("checkActive called as Tetromino is being destroyed.");
     }
 
-    void moveThis() {
+    public void moveThis() {
         transf.transform.Translate(new Vector3(0, -1, 0) * speed * Time.deltaTime, Space.World);
         //Debug.Log(speed);
 
@@ -66,17 +74,22 @@ public class Movement_v2 : MonoBehaviour
         moveDir += Input.GetKeyDown(KeyCode.S) ? new Vector3(0f, 0f, -sideSpeed) : Vector3.zero;
         moveDir += Input.GetKeyDown(KeyCode.D) ? new Vector3(sideSpeed, 0f, 0f) : Vector3.zero;
         moveDir += Input.GetKeyDown(KeyCode.A) ? new Vector3(-sideSpeed, 0f, 0f) : Vector3.zero;
-        
-        transf.transform.position += moveDir;
+
+        if (PauseMenuManager.Instance == null || !PauseMenuManager.Instance.GetPauseStatus()) { 
+            transf.transform.position += moveDir;
+        }
 
         Vector3 rotDir = new Vector3(0, 0, 0);
         rotDir += Input.GetKeyDown(KeyCode.Q) ? new Vector3(90f, 0f, 0f) : Vector3.zero;
         rotDir += Input.GetKeyDown(KeyCode.E) ? new Vector3(0f, 90f, 0f) : Vector3.zero;
-        transf.transform.rotation *= Quaternion.Euler(rotDir);
+        if (PauseMenuManager.Instance == null || !PauseMenuManager.Instance.GetPauseStatus())
+        {
+            transf.transform.rotation *= Quaternion.Euler(rotDir);
+        }
 
     }
 
-    private void CheckForSpeedUp()
+    public void CheckForSpeedUp()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {

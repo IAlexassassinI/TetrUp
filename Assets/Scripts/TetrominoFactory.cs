@@ -3,7 +3,7 @@ using UnityEngine;
 public class TetrominoFactory : MonoBehaviour
 {
     public GameObject blockPrefab;
-    public float tetrominoMass = 4.0f;
+    public float tetrominoMass = 10.0f;
     public uint size = 2;
 
     public GameObject CreateTetromino(string shapeType)
@@ -74,7 +74,7 @@ public class TetrominoFactory : MonoBehaviour
                     new Vector2(-size, 0), new Vector2(0, 0), new Vector2(0, size), new Vector2(size, size)
                 };
             default:
-                Debug.LogError("Unknown shape type: " + shapeType);
+                Debug.Log("Unknown shape type: " + shapeType);
                 return new Vector2[0];
         }
     }
